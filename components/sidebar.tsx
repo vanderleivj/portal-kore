@@ -13,7 +13,7 @@ export default function Sidebar() {
       <nav className="flex-1">
         <ul>
           <li className="mb-4 flex items-center gap-2">
-            <div className="h-12 bg-white rounded-lg w-1 ml-[-2px]" />
+            <div className="h-12 bg-white rounded-lg w-1 ml-[-1px]" />
             <Link
               href="/"
               className={`flex items-center gap-2 hover:text-gray-300`}

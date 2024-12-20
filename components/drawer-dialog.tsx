@@ -5,15 +5,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { StatusTimeline } from "./status-timeline";
+import { StatusTimeline, Step } from "./status-timeline";
 
-export function DrawerDialog({
-  open,
-  onOpenChange,
-}: {
+interface DrawerDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-}) {
+  steps: Step[];
+}
+
+export function DrawerDialog({ open, onOpenChange, steps }: DrawerDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -24,7 +24,7 @@ export function DrawerDialog({
           <DialogTitle>Status do pedido </DialogTitle>
           <DialogDescription>Nº #223124123</DialogDescription>
         </DialogHeader>
-        <StatusTimeline />
+        <StatusTimeline steps={steps} />
       </DialogContent>
     </Dialog>
   );

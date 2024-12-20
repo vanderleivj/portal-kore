@@ -1,115 +1,99 @@
-import {
-  CheckCircle,
-  Clock,
-  XCircle,
-  DollarSign,
-  ShoppingCart,
-  Truck,
-  FileText,
-} from "lucide-react";
+interface SubStatus {
+  id: string;
+  status: string;
+  responsible: string;
+  date: string;
+  time: string;
+  active: boolean;
+  icon: JSX.Element;
+}
 
-const steps = [
-  {
-    id: 1,
-    status: "1. Pedido de Venda em Aberto",
-    responsavel: "João Silva",
-    data: "20/11/2024",
-    hora: "10:00",
-    ativo: true,
-    icone: <ShoppingCart className="size-4" />,
-  },
-  {
-    id: 2,
-    status: "2. Financeiro Rejeitado",
-    responsavel: "Maria Oliveira",
-    data: "21/11/2024",
-    hora: "10:00",
-    ativo: true,
-    icone: <XCircle className="size-4" />,
-  },
-  {
-    id: 3,
-    status: "3. Aguardando Liberação Financeira",
-    ativo: false,
-    icone: <DollarSign className="size-4" />,
-  },
-  {
-    id: 4,
-    status: "4. Aguardando Liberação Comercial",
-    ativo: false,
-    icone: <CheckCircle className="size-4" />,
-  },
-  {
-    id: 5,
-    status: "5.   Aguardando Liberação Estoque",
-    ativo: false,
-    icone: <Truck className="size-4" />,
-  },
-  {
-    id: 6,
-    status: "6. Aguardando Separação",
-    ativo: false,
-    icone: <Clock className="size-4" />,
-  },
-  {
-    id: 7,
-    status: "7. Pedido em Separação",
-    ativo: false,
-    icone: <Clock className="size-4" />,
-  },
-  {
-    id: 8,
-    status: "8.   Aguardando Faturamento",
-    ativo: false,
-    icone: <FileText className="size-4" />,
-  },
-  {
-    id: 9,
-    status: "9. Aguardando Faturamento Parcial",
-    ativo: false,
-    icone: <FileText className="size-4" />,
-  },
-  {
-    id: 10,
-    status: "10.  Nota Fiscal Gerada",
-    ativo: false,
-    icone: <CheckCircle className="size-4" />,
-  },
-];
+export interface Step {
+  id: number;
+  status: string;
+  responsible: string;
+  date: string;
+  time: string;
+  active: boolean;
+  icon: JSX.Element;
+  subStatus?: SubStatus[];
+}
 
-export function StatusTimeline() {
+interface StatusTimelineProps {
+  steps: Step[];
+}
+
+export function StatusTimeline({ steps }: StatusTimelineProps) {
   return (
     <div className="flex flex-col items-start overflow-y-auto">
       {steps.map((step) => (
-        <div
-          key={step.id}
-          className={`flex items-center h-16 mb-4  w-full ${
-            step.ativo ? "opacity-100" : "opacity-50"
-          }`}
-        >
+        <div key={step.id} className="w-full">
           <div
-            className={`w-10 h-9 rounded-full flex items-center justify-center mr-4 ${
-              step.ativo ? "bg-[#A2C616]" : "bg-[#235A81] text-white/50"
+            className={`flex items-center h-16 mb-4 w-full ${
+              step.active ? "opacity-100" : "opacity-50"
             }`}
           >
-            {step.icone}
-          </div>
-          <div className="flex flex-row items-center justify-between w-full">
-            <div>
-              <div className=" text-sm text-primary-color">{step.status}</div>
-              {step.responsavel && (
-                <div className="text-sm text-primary-color font-bold">
-                  Responsável: {step.responsavel}
+            <div
+              className={`w-10 h-9 rounded-full flex items-center justify-center mr-4 ${
+                step.active ? "bg-[#A2C616]" : "bg-[#235A81] text-white/50"
+              }`}
+            >
+              {step.icon}
+            </div>
+            <div className="flex flex-row items-center justify-between w-full">
+              <div>
+                <div className="text-sm text-primary-color">{step.status}</div>
+                {step.responsible && (
+                  <div className="text-sm text-primary-color font-bold">
+                    Responsável: {step.responsible}
+                  </div>
+                )}
+              </div>
+              {step.date && (
+                <div className="text-sm text-primary-color text-right">
+                  {step.date}
+                  <br /> {step.time}
                 </div>
               )}
             </div>
-            {step.data && (
-              <div className="text-sm text-primary-color text-right">
-                {step.data}
-                <br /> {step.hora}
-              </div>
-            )}
           </div>
+          {step.subStatus &&
+            step.subStatus.map((subStep) => (
+              <div
+                key={subStep.id}
+                className={`flex items-center h-5 mb-4 w-auto ml-8 ${
+                  subStep.active ? "opacity-100" : "opacity-50"
+                }`}
+              >
+                <div
+                  className={`w-8 h-7 rounded-full flex items-center justify-center mr-4 ${
+                    subStep.active
+                      ? "bg-[#A2C616]"
+                      : "bg-[#235A81] text-white/50"
+                  }`}
+                >
+                  {subStep.icon}
+                </div>
+                <div className="flex flex-row items-center justify-between w-full">
+                  <div>
+                    <div className="text-sm text-primary-color">
+                      {subStep.status}
+                    </div>
+                    {subStep.responsible && (
+                      <div className="text-sm text-primary-color font-bold">
+                        Responsável: {subStep.responsible}
+                      </div>
+                    )}
+                  </div>
+                  {subStep.date && (
+                    <div className="text-sm text-primary-color text-right">
+                      {subStep.date}
+                      <br /> {subStep.time}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
         </div>
       ))}
     </div>

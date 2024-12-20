@@ -33,7 +33,7 @@ export function SignInForm() {
               <FormItem>
                 <FormLabel className="text-gray-500">E-mail</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -46,7 +46,7 @@ export function SignInForm() {
               <FormItem>
                 <FormLabel className="text-gray-500">Senha</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

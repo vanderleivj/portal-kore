@@ -1,3 +1,4 @@
+"use client";
 import { SelectScrollable } from "@/components/form-select";
 import { MainTable } from "@/components/main-table";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
