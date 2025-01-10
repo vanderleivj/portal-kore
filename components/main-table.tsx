@@ -85,7 +85,7 @@ export function MainTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Nº Pedido</TableHead>
+            <TableHead>Nº Pedido </TableHead>
             <TableHead>Qtd. Disponível</TableHead>
             <TableHead>Qtd. Pedidos de Vendas</TableHead>
             <TableHead>Qtd. Em Trânsito</TableHead>
