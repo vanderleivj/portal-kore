@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { api } from "@/lib/axios";
 import { Order, OrderListResponse } from "../types/order";
 import { DateRange } from "react-day-picker";
+import Cookies from "js-cookie";
 
 interface FetchOrdersParams {
   page?: number;
@@ -34,20 +34,30 @@ export function useOrders() {
     try {
       const dateFrom = format(dateRange.from, "yyyyMMdd");
       const dateTo = format(dateRange.to, "yyyyMMdd");
+      const basicToken = Cookies.get("basic-auth");
 
-      const response = await api.get<OrderListResponse>(`/orderlist`, {
-        params: {
-          datefrom: dateFrom,
-          dateto: dateTo,
-          Page: params?.page || currentPage,
-          PageSize: params?.pageSize || 10,
-          orderid: params?.orderId || "",
-          pagination: params?.pagination || "Y",
+      const searchParams = new URLSearchParams({
+        datefrom: dateFrom,
+        dateto: dateTo,
+        Page: String(params?.page || currentPage),
+        PageSize: String(params?.pageSize || 10),
+        orderid: params?.orderId || "",
+        pagination: params?.pagination || "Y",
+      });
+
+      const response = await fetch(`/api/orders?${searchParams}`, {
+        headers: {
+          Authorization: basicToken || "",
         },
       });
 
-      setOrders(response.data.result || []);
-      setTotalPages(response.data.totalPages || 1);
+      if (!response.ok) {
+        throw new Error("Erro ao buscar pedidos");
+      }
+
+      const data: OrderListResponse = await response.json();
+      setOrders(data.result || []);
+      setTotalPages(data.totalPages || 1);
     } catch (err) {
       console.error("Erro ao buscar pedidos:", err);
       setError("Erro ao carregar a lista de pedidos");
