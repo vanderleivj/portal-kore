@@ -46,4 +46,9 @@ api.interceptors.response.use(
   }
 );
 
+// Configuração global para permitir certificados auto-assinados
+axios.defaults.httpsAgent = new https.Agent({
+  rejectUnauthorized: false,
+});
+
 export default api;

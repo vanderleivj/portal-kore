@@ -1,7 +1,7 @@
 "use client";
 
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
-import { useOrders } from "./hooks/useOrders";
+import { useOrders } from "@/app/hooks/useOrders";
 import { MainTable } from "@/components/main-table";
 
 export default function Home() {

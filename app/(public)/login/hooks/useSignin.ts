@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { FormSchema } from "../types/form";
 import type { FormData } from "../types/form";
+import axios from "axios";
 
 function createBasicAuthToken(username: string, password: string): string {
   const token = Buffer.from(`${username}:${password}`).toString("base64");
@@ -22,25 +23,24 @@ export const useSignin = () => {
 
   async function onSubmit(data: FormData) {
     try {
-      const formData = new FormData();
-      formData.append("grant_type", "password");
-      formData.append("username", data.username.trim());
-      formData.append("password", data.password);
+      const params = new URLSearchParams();
+      params.append("grant_type", "password");
+      params.append("username", data.username.trim());
+      params.append("password", data.password);
 
-      const response = await fetch("/api/auth", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await axios.post(
+        process.env.NEXT_PUBLIC_AUTH_URL || "",
+        params,
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error("Erro na autenticação");
-      }
-
-      const responseData = await response.json();
-
-      if (responseData.access_token) {
+      if (response.data.access_token) {
         // Salva o token de acesso
-        Cookies.set("auth-token", responseData.access_token, { expires: 1 });
+        Cookies.set("auth-token", response.data.access_token, { expires: 1 });
 
         // Cria e salva o token básico em base64
         const basicToken = createBasicAuthToken(
