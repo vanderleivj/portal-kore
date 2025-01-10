@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { Order, OrderListResponse } from "../types/order";
 import { DateRange } from "react-day-picker";
 import Cookies from "js-cookie";
+import axios from "axios";
 
 interface FetchOrdersParams {
   page?: number;
@@ -36,26 +37,25 @@ export function useOrders() {
       const dateTo = format(dateRange.to, "yyyyMMdd");
       const basicToken = Cookies.get("basic-auth");
 
-      const searchParams = new URLSearchParams({
-        datefrom: dateFrom,
-        dateto: dateTo,
-        Page: String(params?.page || currentPage),
-        PageSize: String(params?.pageSize || 10),
-        orderid: params?.orderId || "",
-        pagination: params?.pagination || "Y",
-      });
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/orderlist`,
+        {
+          params: {
+            datefrom: dateFrom,
+            dateto: dateTo,
+            Page: params?.page || currentPage,
+            PageSize: params?.pageSize || 10,
+            orderid: params?.orderId || "",
+            pagination: params?.pagination || "Y",
+          },
+          headers: {
+            Authorization: basicToken || "",
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const response = await fetch(`/api/orders?${searchParams}`, {
-        headers: {
-          Authorization: basicToken || "",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Erro ao buscar pedidos");
-      }
-
-      const data: OrderListResponse = await response.json();
+      const data: OrderListResponse = response.data;
       setOrders(data.result || []);
       setTotalPages(data.totalPages || 1);
     } catch (err) {
