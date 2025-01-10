@@ -3,12 +3,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Cookies from "js-cookie";
+import https from "https";
 import { FormSchema, FormData } from "../types/form";
 
 function createBasicAuthToken(username: string, password: string): string {
   const token = Buffer.from(`${username}:${password}`).toString("base64");
   return `Basic ${token}`;
 }
+
+// Criando uma instância do Axios específica para autenticação
+const authApi = axios.create({
+  timeout: 10000,
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+  },
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false, // Permite certificados auto-assinados
+  }),
+});
 
 export const useSignin = () => {
   const router = useRouter();
@@ -30,11 +42,7 @@ export const useSignin = () => {
       const authUrl = process.env.NEXT_PUBLIC_AUTH_URL;
       console.log("URL de autenticação:", authUrl);
 
-      const response = await axios.post(authUrl || "", formData, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      });
+      const response = await authApi.post(authUrl || "", formData);
 
       if (response.data.access_token) {
         // Salva o token de acesso

@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import https from "https";
 
 // Criando uma instância personalizada do Axios
 export const api = axios.create({
@@ -8,6 +9,9 @@ export const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false, // Permite certificados auto-assinados
+  }),
 });
 
 // Interceptador para requisições
