@@ -1,25 +1,30 @@
-import type { Metadata } from "next";
-import Header from "@/components/header";
-import { Providers } from "@/components/providers";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Koretech",
-  description: "Portal de controle de pedidos",
-};
+import Sidebar from "@/components/sidebar";
+import Header from "@/components/header";
+import { useSidebarStore } from "@/store/use-sidebar-store";
 
 export default function PrivateLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const { collapsed } = useSidebarStore();
   return (
-    <Providers>
-      <div className="flex flex-col flex-1">
+    <div className="flex h-screen">
+      <Sidebar />
+      <div className="flex-1 flex flex-col">
         <Header />
-        <div className="flex-1 bg-[#F5F5F5] p-6 overflow-auto">
-          <main>{children}</main>
+        <div className="flex-1 bg-[#F5F5F5] overflow-auto">
+          <main
+            className={`mx-auto p-6 transition-all duration-300 ${
+              collapsed ? "max-w-[1440px]" : "max-w-[1240px]"
+            }`}
+          >
+            {children}
+          </main>
         </div>
       </div>
-    </Providers>
+    </div>
   );
 }
