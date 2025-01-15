@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
@@ -11,7 +12,7 @@ export default {
     extend: {
       backgroundImage: {
         "custom-gradient":
-          "linear-gradient(180deg, #235A81 23%, #235A81 50%, #123046 100%)",
+          "linear-gradient(180deg, #235A81 0%, #235A81 50%, #123046 100%)",
       },
       colors: {
         background: "hsl(var(--background))",
@@ -58,14 +59,14 @@ export default {
           "5": "hsl(var(--chart-5))",
         },
         sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
+          DEFAULT: "#235A81",
+          foreground: "#FFFFFF",
+          primary: "#235A81",
+          "primary-foreground": "#FFFFFF",
+          accent: "#123046",
+          "accent-foreground": "#FFFFFF",
+          border: "#123046",
+          ring: "#235A81",
         },
       },
       borderRadius: {
@@ -75,5 +76,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [animate],
 } satisfies Config;

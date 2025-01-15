@@ -35,6 +35,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface MainTableProps {
   data: Order[];
@@ -82,127 +88,220 @@ export function MainTable({
 
   return (
     <div className="flex flex-col gap-4">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Nº Pedido </TableHead>
-            <TableHead>Qtd. Disponível</TableHead>
-            <TableHead>Qtd. Pedidos de Vendas</TableHead>
-            <TableHead>Qtd. Em Trânsito</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Ações</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map((order, index) => (
-            <React.Fragment key={order.OrderId + order.ProductId}>
+      <div className="border rounded-md">
+        <div className="overflow-auto max-h-[calc(100vh-250px)]">
+          <Table>
+            <TableHeader className="sticky top-0 bg-white z-10">
               <TableRow>
-                <TableCell>{order.OrderId}</TableCell>
-                <TableCell>{order.QuantityUnit1}</TableCell>
-                <TableCell>{order.QuantityUnit2}</TableCell>
-                <TableCell>{order.QtyAlreadyProduced}</TableCell>
-                <TableCell>
-                  <Badge
-                    variant={
-                      order.OrderStatus === "Nota fiscal Gerada"
-                        ? "invoiceOrder"
-                        : order.OrderStatus === "Pedido de Venda em Aberto"
-                        ? "productionOrder"
-                        : "stockAnalysis"
-                    }
-                  >
-                    {order.OrderStatus}
-                  </Badge>
-                </TableCell>
-                <TableCell className="flex items-center gap-4">
-                  <button onClick={() => toggleRow(index)}>
-                    {expandedIndex === index ? (
-                      <Minus className="size-4" />
-                    ) : (
-                      <Plus className="size-4" />
-                    )}
-                  </button>
-                  <button onClick={() => handleOrderClick(order)}>
-                    <Search className="size-4" />
-                  </button>
-                </TableCell>
+                <TableHead className="max-w-[200px]">Nº Pedido</TableHead>
+                <TableHead className="max-w-[200px]">Data Inclusão</TableHead>
+                <TableHead className="max-w-[200px]">Data Entrega</TableHead>
+                <TableHead className="max-w-[200px]">Reprogramação</TableHead>
+                <TableHead className="max-w-[200px]">Código Produto</TableHead>
+                <TableHead className="max-w-[200px]">
+                  Descrição do produto
+                </TableHead>
+                <TableHead className="max-w-[200px]">Un. Med. 1º</TableHead>
+                <TableHead className="max-w-[200px]">Un. Med. 2º</TableHead>
+                <TableHead className="max-w-[200px]">
+                  Ordem de Produção
+                </TableHead>
+                <TableHead className="max-w-[200px]">Status</TableHead>
+                <TableHead className="max-w-[200px] text-center sticky right-0 bg-white after:absolute after:right-0 after:top-0 after:bottom-0 after:w-4 after:bg-white after:-z-10">
+                  Ações
+                </TableHead>
               </TableRow>
-              {expandedIndex === index && (
-                <TableRow>
-                  <TableCell colSpan={8}>
-                    <div className="gap-4 flex flex-col w-full p-4">
-                      <div className="flex flex-row gap-2 w-full justify-between">
-                        <p className="w-1/3 font-thin">
-                          Data Inclusão:{" "}
-                          <span className="font-normal">{order.Date}</span>
-                        </p>
-                        <p className="w-1/3 font-thin">
-                          Data Entrega:{" "}
-                          <span className="font-normal">
-                            {order.DeliveryDate}
-                          </span>
-                        </p>
-                        <p className="w-1/3 font-thin">
-                          Reprogramação:{" "}
-                          <span className="font-normal">
-                            {order.ReschedulingDate || "-"}
-                          </span>
-                        </p>
-                      </div>
-                      <div className="flex flex-row gap-2 w-full justify-between">
-                        <p className="w-1/3 font-thin">
-                          Ordem de Produção:{" "}
-                          <span className="font-normal">
-                            {order.ProductionOrderId}
-                          </span>
-                        </p>
-                        <p className="w-1/3 font-thin">
-                          Cliente:{" "}
-                          <span className="font-normal">
-                            {order.CustomerName}
-                          </span>
-                        </p>
-                        <p className="w-1/3 font-thin">
-                          Código Produto:{" "}
-                          <span className="font-normal">{order.ProductId}</span>
-                        </p>
-                      </div>
-                      <div className="flex flex-row gap-2 w-full">
-                        <p className="font-thin">
-                          Descrição do produto:{" "}
-                          <span className="font-normal">
-                            {order.ProductDescription}
-                          </span>
-                        </p>
-                      </div>
-                      <div className="flex flex-row gap-2 w-full justify-between">
-                        <p className="w-1/3 font-thin">
-                          Unidade Med. 1º:{" "}
-                          <span className="font-normal">
-                            {order.MeasureUnit1}
-                          </span>
-                        </p>
-                        <p className="w-1/3 font-thin">
-                          Unidade Med. 2º:{" "}
-                          <span className="font-normal">
-                            {order.MeasureUnit2}
-                          </span>
-                        </p>
-                        <p className="w-1/3 font-thin">
-                          Observações:{" "}
-                          <span className="font-normal">
-                            {order.OrderNotes || "-"}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )}
-            </React.Fragment>
-          ))}
-        </TableBody>
-      </Table>
+            </TableHeader>
+            <TableBody>
+              {data.map((order, index) => (
+                <React.Fragment key={order.OrderId + order.ProductId}>
+                  <TableRow>
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="block truncate">
+                              {order.OrderId}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{order.OrderId}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="block truncate">{order.Date}</span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{order.Date}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="block truncate">
+                              {order.DeliveryDate}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{order.DeliveryDate}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="block truncate">
+                              {order.ReschedulingDate || "-"}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{order.ReschedulingDate || "-"}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="block truncate">
+                              {order.ProductId}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{order.ProductId}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="block truncate">
+                              {order.ProductDescription}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{order.ProductDescription}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="block truncate">
+                              {order.MeasureUnit1} {order.QuantityUnit1}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>
+                              {order.MeasureUnit1} {order.QuantityUnit1}
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="block truncate">
+                              {order.MeasureUnit2} {order.QuantityUnit2}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>
+                              {order.MeasureUnit2} {order.QuantityUnit2}
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="block truncate">
+                              {order.ProductionOrderId}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{order.ProductionOrderId}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
+                    <TableCell className="max-w-[200px] h-[50px]">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge
+                              variant={
+                                order.OrderStatus === "Nota fiscal Gerada"
+                                  ? "invoiceOrder"
+                                  : order.OrderStatus ===
+                                    "Pedido de Venda em Aberto"
+                                  ? "productionOrder"
+                                  : "stockAnalysis"
+                              }
+                            >
+                              {order.OrderStatus}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{order.OrderStatus}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
+                    <TableCell className="max-w-[200px] h-[55px] flex justify-center gap-4 items-center sticky right-0 bg-white after:absolute after:right-0 after:top-0 after:bottom-0 after:w-4 after:bg-white after:-z-10 p-0">
+                      <button onClick={() => toggleRow(index)}>
+                        {expandedIndex === index ? (
+                          <Minus className="size-4" />
+                        ) : (
+                          <Plus className="size-4" />
+                        )}
+                      </button>
+                      <button onClick={() => handleOrderClick(order)}>
+                        <Search className="size-4" />
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                  {expandedIndex === index && (
+                    <TableRow>
+                      <TableCell colSpan={15}>
+                        <div className="gap-4 flex flex-col w-full p-4">
+                          <div className="flex flex-row gap-2 w-full">
+                            <p className="font-thin">
+                              Observações:{" "}
+                              <span className="font-normal">
+                                {order.OrderNotes || "-"}
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </React.Fragment>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
 
       {mounted && totalPages > 1 && (
         <Pagination>

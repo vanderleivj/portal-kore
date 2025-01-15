@@ -5,33 +5,40 @@ import Image from "next/image";
 import logo from "@/app/assets/white-logo.svg";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { cn } from "@/lib/utils";
+import { useSidebarStore } from "@/store/use-sidebar-store";
 
 export default function Sidebar() {
   const router = useRouter();
+  const { collapsed } = useSidebarStore();
 
   const handleLogout = () => {
-    // Remove os tokens
     Cookies.remove("auth-token");
     Cookies.remove("basic-auth");
-    // Redireciona para a página de login
     router.push("/login");
   };
 
   return (
-    <aside className="w-64 bg-primary text-white h-screen py-4 flex flex-col">
-      <div className="text-2xl font-bold mb-8 px-4">
-        <Image src={logo} alt="Logo" width={100} height={100} />
+    <aside
+      className={cn(
+        "bg-custom-gradient text-white h-screen py-4 flex flex-col transition-all duration-300",
+        collapsed ? "w-16" : "w-64"
+      )}
+    >
+      <div className="flex items-center justify-center px-4 mb-8">
+        {!collapsed && <Image src={logo} alt="Logo" width={100} height={100} />}
       </div>
       <nav className="flex-1">
         <ul>
-          <li className="mb-4 flex items-center gap-2">
-            <div className="h-12 bg-white rounded-lg w-1 ml-[-1px]" />
+          <li className="mb-4 px-4">
             <Link
               href="/"
-              className={`flex items-center gap-2 hover:text-gray-300`}
+              className="flex items-center gap-2 hover:text-gray-300"
             >
               <List size={20} />
-              <span className="font-medium text-sm">Lista de pedidos</span>
+              {!collapsed && (
+                <span className="font-medium text-sm">Lista de pedidos</span>
+              )}
             </Link>
           </li>
         </ul>
@@ -42,7 +49,7 @@ export default function Sidebar() {
           className="flex items-center gap-2 text-white/80 hover:text-white w-full"
         >
           <LogOut size={20} />
-          <span className="font-medium text-sm">Sair</span>
+          {!collapsed && <span className="font-medium text-sm">Sair</span>}
         </button>
       </div>
     </aside>
