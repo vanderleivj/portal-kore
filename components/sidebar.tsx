@@ -1,57 +1,52 @@
 "use client";
-import { List, LogOut } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
-import logo from "@/app/assets/horizontal-white-logo.png";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import { cn } from "@/lib/utils";
+
 import { useSidebarStore } from "@/store/use-sidebar-store";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { menuItems } from "@/config/menu";
+import Image from "next/image";
+import Logo from "@/app/assets/white-logo.svg";
 
 export default function Sidebar() {
-  const router = useRouter();
   const { collapsed } = useSidebarStore();
-
-  const handleLogout = () => {
-    Cookies.remove("auth-token");
-    Cookies.remove("basic-auth");
-    router.push("/login");
-  };
+  const pathname = usePathname();
 
   return (
     <aside
       className={cn(
-        "bg-custom-gradient text-white h-screen py-4 flex flex-col transition-all duration-300",
-        collapsed ? "w-16" : "w-64"
+        "bg-custom-gradient h-screen transition-all duration-300 relative",
+        collapsed ? "w-[70px]" : "w-[240px]"
       )}
     >
-      <div className="flex items-center justify-start px-4 mb-8">
-        {!collapsed && <Image src={logo} alt="Logo" width={100} height={100} />}
+      <div className="flex justify-start items-center h-16 px-4">
+        <Image src={Logo} alt="Logo" width={100} height={100} />
       </div>
-      <nav className="flex-1">
-        <ul>
-          <li className="mb-4 px-4">
+      <nav className="flex flex-col gap-2 p-4">
+        {menuItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
             <Link
-              href="/"
-              className="flex items-center gap-2 hover:text-gray-300"
-            >
-              <List size={20} />
-              {!collapsed && (
-                <span className="font-medium text-sm">Lista de pedidos</span>
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-4 px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors",
+                isActive && "bg-white/10"
               )}
+            >
+              <item.icon className="size-5 shrink-0" />
+              <span
+                className={cn(
+                  "whitespace-nowrap transition-all duration-300",
+                  collapsed && "opacity-0 translate-x-28 overflow-hidden"
+                )}
+              >
+                {item.title}
+              </span>
             </Link>
-          </li>
-        </ul>
+          );
+        })}
       </nav>
-      <div className="px-4 py-4 border-t border-white/10">
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 text-white/80 hover:text-white w-full"
-        >
-          <LogOut size={20} />
-          {!collapsed && <span className="font-medium text-sm">Sair</span>}
-        </button>
-      </div>
     </aside>
   );
 }

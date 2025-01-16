@@ -4,11 +4,16 @@ import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import { useOrders } from "@/app/hooks/useOrders";
 import { MainTable } from "@/components/main-table";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { DateRange } from "react-day-picker";
 
 export default function Home() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const {
     orders,
     isLoading,
@@ -25,49 +30,115 @@ export default function Home() {
   const [orderIdInput, setOrderIdInput] = useState("");
   const [orderIds, setOrderIds] = useState<string[]>([]);
 
+  // Carrega os filtros da URL ao montar o componente
+  useEffect(() => {
+    const urlOrderIds = searchParams.get("orderIds");
+    const dateFrom = searchParams.get("dateFrom");
+    const dateTo = searchParams.get("dateTo");
+
+    if (urlOrderIds) {
+      const ids = urlOrderIds.split(",");
+      setOrderIds(ids);
+      filterByOrderId(urlOrderIds);
+    }
+
+    if (dateFrom && dateTo) {
+      setDateRange({
+        from: new Date(dateFrom),
+        to: new Date(dateTo),
+      });
+    }
+  }, []);
+
+  // Atualiza a URL quando os filtros mudam
+  const updateURL = (newOrderIds?: string[], newDateRange?: DateRange) => {
+    const params = new URLSearchParams();
+
+    if (newOrderIds?.length) {
+      params.set("orderIds", newOrderIds.join(","));
+    }
+
+    if (newDateRange?.from && newDateRange?.to) {
+      params.set("dateFrom", newDateRange.from.toISOString());
+      params.set("dateTo", newDateRange.to.toISOString());
+    }
+
+    router.push(`?${params.toString()}`);
+  };
+
   const handleOrderIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, "").slice(0, 6);
     setOrderIdInput(value);
 
     if (value.length === 6) {
-      // Adiciona o novo ID à lista se ele ainda não existir
       if (!orderIds.includes(value)) {
         const newOrderIds = [...orderIds, value];
         setOrderIds(newOrderIds);
+        setDateRange(undefined);
         filterByOrderId(newOrderIds.join(","));
+        updateURL(newOrderIds, undefined);
       }
-      // Limpa o input após adicionar
       setOrderIdInput("");
     }
   };
 
+  const handleDateChange = (newDateRange: DateRange | undefined) => {
+    setDateRange(newDateRange);
+    if (newDateRange?.from && newDateRange?.to) {
+      setOrderIds([]);
+      updateURL([], newDateRange);
+    }
+  };
+
+  const handleRemoveOrderIds = () => {
+    setOrderIds([]);
+    if (dateRange?.from && dateRange?.to) {
+      updateURL([], dateRange);
+      refetch();
+    } else {
+      updateURL();
+      refetch();
+    }
+  };
+
+  const handleRemoveDateFilter = () => {
+    setDateRange(undefined);
+    if (orderIds.length > 0) {
+      updateURL(orderIds);
+      filterByOrderId(orderIds.join(","));
+    } else {
+      updateURL();
+      refetch();
+    }
+  };
+
   return (
-    <main className="flex min-h-screen flex-col p-6 gap-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-medium text-primary-color">
+    <main className="flex min-h-screen flex-col p-4 md:p-6 gap-4 md:gap-6">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+        <h1 className="text-xl md:text-2xl font-medium text-primary-color">
           Lista de Pedidos
         </h1>
-        <DatePickerWithRange
-          date={dateRange}
-          onDateChange={setDateRange}
-          className="w-auto"
-        />
-      </div>
-
-      <div className="flex justify-between items-center mt-8">
-        <div className="w-full max-w-xs">
-          <Input
-            type="text"
-            placeholder="Filtrar por número do pedido (6 dígitos)"
-            value={orderIdInput}
-            onChange={handleOrderIdChange}
-            className="w-full bg-white"
-            maxLength={6}
+        <div className="w-full md:w-auto">
+          <DatePickerWithRange
+            date={dateRange}
+            onDateChange={handleDateChange}
+            className="w-full md:w-auto"
           />
         </div>
       </div>
 
-      <div className="flex flex-row flex-wrap gap-2 items-center">
+      <div className="w-full max-w-xs">
+        <Input
+          type="text"
+          placeholder="Filtrar por número do pedido (6 dígitos)"
+          value={orderIdInput}
+          onChange={handleOrderIdChange}
+          className="w-full bg-white text-sm"
+          maxLength={6}
+        />
+      </div>
+
+      <div className="flex flex-col md:flex-row flex-wrap gap-2 items-start md:items-center">
         <p className="text-sm text-gray-500 whitespace-nowrap">
           Filtros aplicados:
         </p>
@@ -80,10 +151,7 @@ export default function Home() {
               <span className="flex items-center gap-1">
                 Pedidos: {orderIds.join(", ")}
                 <button
-                  onClick={() => {
-                    setOrderIds([]);
-                    refetch();
-                  }}
+                  onClick={handleRemoveOrderIds}
                   className="hover:bg-gray-100 rounded-full p-0.5"
                 >
                   <X className="h-3 w-3" />
@@ -99,6 +167,12 @@ export default function Home() {
               <span className="flex items-center gap-1">
                 Período: {dateRange.from.toLocaleDateString()} -{" "}
                 {dateRange.to.toLocaleDateString()}
+                <button
+                  onClick={handleRemoveDateFilter}
+                  className="hover:bg-gray-100 rounded-full p-0.5"
+                >
+                  <X className="h-3 w-3" />
+                </button>
               </span>
             </Badge>
           )}

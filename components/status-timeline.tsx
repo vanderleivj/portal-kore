@@ -25,7 +25,7 @@ interface StatusTimelineProps {
 
 export function StatusTimeline({ steps }: StatusTimelineProps) {
   return (
-    <div className="flex flex-col items-start overflow-y-auto">
+    <div className="flex flex-col items-start overflow-y-auto mt-6">
       {steps.map((step) => (
         <div key={step.id} className="w-full">
           <div
@@ -35,7 +35,9 @@ export function StatusTimeline({ steps }: StatusTimelineProps) {
           >
             <div
               className={`w-10 h-9 rounded-full flex items-center justify-center mr-4 ${
-                step.active ? "bg-[#A2C616]" : "bg-[#235A81] text-white/50"
+                step.active
+                  ? "bg-[#A2C616] text-white"
+                  : "bg-[#235A81] text-white/50"
               }`}
             >
               {step.icon}
@@ -68,7 +70,7 @@ export function StatusTimeline({ steps }: StatusTimelineProps) {
                 <div
                   className={`w-8 h-7 rounded-full flex items-center justify-center mr-4 ${
                     subStep.active
-                      ? "bg-[#A2C616]"
+                      ? "bg-[#A2C616] text-white"
                       : "bg-[#235A81] text-white/50"
                   }`}
                 >
