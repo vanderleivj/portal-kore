@@ -2,7 +2,7 @@
 import { List, LogOut } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import logo from "@/app/assets/white-logo.svg";
+import logo from "@/app/assets/horizontal-white-logo.png";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { cn } from "@/lib/utils";
@@ -25,7 +25,7 @@ export default function Sidebar() {
         collapsed ? "w-16" : "w-64"
       )}
     >
-      <div className="flex items-center justify-center px-4 mb-8">
+      <div className="flex items-center justify-start px-4 mb-8">
         {!collapsed && <Image src={logo} alt="Logo" width={100} height={100} />}
       </div>
       <nav className="flex-1">
