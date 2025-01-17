@@ -1,44 +1,41 @@
 "use client";
 
+import { MobileMenu } from "./mobile-menu";
+import Image from "next/image";
+import Link from "next/link";
 import { useSidebarStore } from "@/store/use-sidebar-store";
+import { Menu } from "lucide-react";
+import { Button } from "./ui/button";
+import Logo from "@/app/assets/white-logo.svg";
 
-export default function Header() {
+export function Header() {
   const { toggleSidebar } = useSidebarStore();
 
   return (
-    <div className="w-full h-[50px] min-h-[50px] px-6 bg-white flex items-center justify-between shadow">
-      <button
-        onClick={toggleSidebar}
-        className="p-1.5 rounded-lg hover:bg-gray-100"
-      >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M3 7H21"
-            stroke="#1C274C"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-          <path
-            d="M3 12H21"
-            stroke="#1C274C"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-          <path
-            d="M3 17H21"
-            stroke="#1C274C"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-        </svg>
-      </button>
-      <p className="text-gray-800 text-lg font-thin">Olá, Kaio Lima</p>
-    </div>
+    <header
+      className={`sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:bg-none bg-custom-gradient px-4`}
+    >
+      <div className="w-full md:container flex h-14 items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="md:hidden">
+            <MobileMenu />
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleSidebar}
+            className="hidden md:flex"
+          >
+            <Menu className="size-5 md:text-current text-white" />
+          </Button>
+          <Link href="/" className="flex items-center space-x-2">
+            <Image src={Logo} alt="Logo" width={100} height={100} />
+          </Link>
+        </div>
+        <div className="text-sm md:text-muted-foreground text-white">
+          Olá, Kaio Lima
+        </div>
+      </div>
+    </header>
   );
 }

@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect, useCallback, useRef } from "react";
 import { format } from "date-fns";
 import { Order, OrderListResponse } from "../types/order";
 import { DateRange } from "react-day-picker";
@@ -26,60 +27,76 @@ export function useOrders() {
     };
   });
 
-  async function fetchOrders(params?: FetchOrdersParams) {
-    if (!dateRange?.from || !dateRange?.to) return;
+  const isFirstRender = useRef(true);
 
-    setIsLoading(true);
-    setError(null);
+  const fetchOrders = useCallback(
+    async (params?: FetchOrdersParams) => {
+      if (!dateRange?.from || !dateRange?.to) return;
 
-    try {
-      const dateFrom = format(dateRange.from, "yyyyMMdd");
-      const dateTo = format(dateRange.to, "yyyyMMdd");
-      const basicToken = Cookies.get("basic-auth");
+      setIsLoading(true);
+      setError(null);
 
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/orderlist`,
-        {
-          params: {
-            datefrom: dateFrom,
-            dateto: dateTo,
-            Page: params?.page || currentPage,
-            PageSize: params?.pageSize || 10,
-            orderid: params?.orderId || "",
-            pagination: params?.pagination || "Y",
-          },
-          headers: {
-            Authorization: basicToken || "",
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      try {
+        const dateFrom = format(dateRange.from, "yyyyMMdd");
+        const dateTo = format(dateRange.to, "yyyyMMdd");
+        const basicToken = Cookies.get("basic-auth");
 
-      const data: OrderListResponse = response.data;
-      setOrders(data.result || []);
-      setTotalPages(data.totalPages || 1);
-    } catch (err) {
-      console.error("Erro ao buscar pedidos:", err);
-      setError("Erro ao carregar a lista de pedidos");
-    } finally {
-      setIsLoading(false);
-    }
-  }
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/orderlist`,
+          {
+            params: {
+              datefrom: dateFrom,
+              dateto: dateTo,
+              Page: params?.page || currentPage,
+              PageSize: params?.pageSize || 10,
+              orderid: params?.orderId || "",
+              pagination: params?.pagination || "Y",
+            },
+            headers: {
+              Authorization: basicToken || "",
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-  const changePage = (page: number) => {
-    setCurrentPage(page);
-    fetchOrders({ page });
-  };
-
-  const filterByOrderId = (orderId: string) => {
-    fetchOrders({ orderId, pagination: "N" });
-  };
+        const data: OrderListResponse = response.data;
+        setOrders(data.result || []);
+        setTotalPages(data.totalPages || 1);
+      } catch (err) {
+        console.error("Erro ao buscar pedidos:", err);
+        setError("Erro ao carregar a lista de pedidos");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [dateRange, currentPage]
+  );
 
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
     if (dateRange?.from && dateRange?.to) {
       fetchOrders();
     }
-  }, [dateRange]);
+  }, [dateRange, fetchOrders]);
+
+  const changePage = useCallback(
+    (page: number) => {
+      setCurrentPage(page);
+      fetchOrders({ page });
+    },
+    [fetchOrders]
+  );
+
+  const filterByOrderId = useCallback(
+    (orderId: string) => {
+      fetchOrders({ orderId, pagination: "N" });
+    },
+    [fetchOrders]
+  );
 
   return {
     orders,

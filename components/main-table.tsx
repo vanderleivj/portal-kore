@@ -11,21 +11,9 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "./ui/badge";
 import { DrawerDialog } from "./drawer-dialog";
-import { Step } from "./status-timeline";
 import { Order } from "@/app/types/order";
-import {
-  ShoppingCart,
-  Clock,
-  XCircle,
-  DollarSign,
-  CheckCircle,
-  Truck,
-  FileText,
-  InboxIcon,
-  Search,
-  Minus,
-  Plus,
-} from "lucide-react";
+import { useOrderAudit } from "@/app/hooks/useOrderAudit";
+import { InboxIcon, Search, Minus, Plus } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -59,14 +47,22 @@ export function MainTable({
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [orderIdNumber, setOrderIdNumber] = useState<string | null>(null);
+  const {
+    fetchOrderAudit,
+    auditData,
+    isLoading: isLoadingAudit,
+  } = useOrderAudit();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const handleOrderClick = (order: Order) => {
+  const handleOrderClick = async (order: Order) => {
     setSelectedOrder(order);
     setIsDialogOpen(true);
+    setOrderIdNumber(order.OrderId);
+    await fetchOrderAudit(order.OrderId);
   };
 
   const toggleRow = (index: number) => {
@@ -87,9 +83,9 @@ export function MainTable({
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="border rounded-md">
-        <div className="overflow-auto max-h-[calc(100vh-250px)]">
+    <div className="flex flex-col gap-4 sm:max-w-none max-w-[370px] mx-auto">
+      <div className="border rounded-md ">
+        <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-250px)]">
           <Table>
             <TableHeader className="sticky top-0 bg-white z-10">
               <TableRow>
@@ -203,12 +199,12 @@ export function MainTable({
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <span className="block truncate">
-                              {order.MeasureUnit1} {order.QuantityUnit1}
+                              {order.QuantityUnit1} {order.MeasureUnit1}
                             </span>
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>
-                              {order.MeasureUnit1} {order.QuantityUnit1}
+                              {order.QuantityUnit1} {order.MeasureUnit1}
                             </p>
                           </TooltipContent>
                         </Tooltip>
@@ -219,12 +215,12 @@ export function MainTable({
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <span className="block truncate">
-                              {order.MeasureUnit2} {order.QuantityUnit2}
+                              {order.QuantityUnit2} {order.MeasureUnit2}
                             </span>
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>
-                              {order.MeasureUnit2} {order.QuantityUnit2}
+                              {order.QuantityUnit2} {order.MeasureUnit2}
                             </p>
                           </TooltipContent>
                         </Tooltip>
@@ -275,7 +271,13 @@ export function MainTable({
                           <Plus className="size-4" />
                         )}
                       </button>
-                      <button onClick={() => handleOrderClick(order)}>
+                      <button
+                        onClick={() => handleOrderClick(order)}
+                        className={
+                          isLoadingAudit ? "opacity-50 cursor-not-allowed" : ""
+                        }
+                        disabled={isLoadingAudit}
+                      >
                         <Search className="size-4" />
                       </button>
                     </TableCell>
@@ -365,96 +367,11 @@ export function MainTable({
         <DrawerDialog
           open={isDialogOpen}
           onOpenChange={setIsDialogOpen}
-          steps={MOCK_STEPS[selectedOrder.OrderStatus] || MOCK_STEPS.default}
+          steps={auditData.steps}
+          isLoading={isLoadingAudit}
+          orderIdNumber={orderIdNumber}
         />
       )}
     </div>
   );
 }
-
-// Mock dos steps que futuramente virá da API
-const MOCK_STEPS: Record<string, Step[]> = {
-  default: [
-    {
-      id: 1,
-      status: "1. Pedido de Venda em Aberto",
-      responsible: "João Silva",
-      date: "20/11/2024",
-      time: "10:00",
-      active: true,
-      icon: <ShoppingCart className="size-4" />,
-    },
-    {
-      id: 2,
-      status: "2. Financeiro Rejeitado",
-      responsible: "Maria Oliveira",
-      date: "21/11/2024",
-      time: "10:00",
-      active: true,
-      icon: <XCircle className="size-4" />,
-    },
-    {
-      id: 3,
-      status: "3. Aguardando Liberação Financeira",
-      responsible: "Maria Oliveira",
-      date: "21/11/2024",
-      time: "10:00",
-      active: true,
-      icon: <DollarSign className="size-4" />,
-    },
-    {
-      id: 4,
-      status: "4. Aguardando Liberação Comercial",
-      responsible: "Maria Oliveira",
-      date: "21/11/2024",
-      time: "10:00",
-      active: true,
-      icon: <CheckCircle className="size-4" />,
-    },
-    {
-      id: 5,
-      status: "5. Aguardando Liberação Estoque",
-      responsible: "Maria Oliveira",
-      date: "21/11/2024",
-      time: "10:00",
-      active: true,
-      icon: <Truck className="size-4" />,
-    },
-    {
-      id: 6,
-      status: "6. Aguardando Separação",
-      responsible: "Maria Oliveira",
-      date: "21/11/2024",
-      time: "10:00",
-      active: true,
-      icon: <Clock className="size-4" />,
-    },
-    {
-      id: 7,
-      status: "7. Pedido em Separação",
-      responsible: "Maria Oliveira",
-      date: "21/11/2024",
-      time: "10:00",
-      active: true,
-      icon: <Clock className="size-4" />,
-    },
-    {
-      id: 8,
-      status: "8. Aguardando Faturamento",
-      responsible: "Maria Oliveira",
-      date: "21/11/2024",
-      time: "10:00",
-      active: true,
-      icon: <FileText className="size-4" />,
-    },
-    {
-      id: 9,
-      status: "9. Nota Fiscal Gerada",
-      responsible: "Maria Oliveira",
-      date: "21/11/2024",
-      time: "10:00",
-      active: true,
-      icon: <CheckCircle className="size-4" />,
-    },
-  ],
-};
