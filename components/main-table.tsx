@@ -93,6 +93,7 @@ export function MainTable({
                 <TableHead className="max-w-[200px]">Data Inclusão</TableHead>
                 <TableHead className="max-w-[200px]">Data Entrega</TableHead>
                 <TableHead className="max-w-[200px]">Reprogramação</TableHead>
+                <TableHead className="max-w-[200px]">Nome do Cliente</TableHead>
                 <TableHead className="max-w-[200px]">Código Produto</TableHead>
                 <TableHead className="max-w-[200px]">
                   Descrição do produto
@@ -112,7 +113,7 @@ export function MainTable({
               {data.map((order, index) => (
                 <React.Fragment key={order.OrderId + order.ProductId}>
                   <TableRow>
-                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-[10px]">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -126,7 +127,7 @@ export function MainTable({
                         </Tooltip>
                       </TooltipProvider>
                     </TableCell>
-                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-[10px]">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -138,7 +139,7 @@ export function MainTable({
                         </Tooltip>
                       </TooltipProvider>
                     </TableCell>
-                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-[10px]">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -152,7 +153,7 @@ export function MainTable({
                         </Tooltip>
                       </TooltipProvider>
                     </TableCell>
-                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-[10px]">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -166,7 +167,21 @@ export function MainTable({
                         </Tooltip>
                       </TooltipProvider>
                     </TableCell>
-                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-[10px]">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="block truncate">
+                              {order.CustomerName || "-"}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{order.CustomerName || "-"}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-[10px]">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -180,7 +195,7 @@ export function MainTable({
                         </Tooltip>
                       </TooltipProvider>
                     </TableCell>
-                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-[10px]">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -194,7 +209,7 @@ export function MainTable({
                         </Tooltip>
                       </TooltipProvider>
                     </TableCell>
-                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-[10px]">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -210,7 +225,7 @@ export function MainTable({
                         </Tooltip>
                       </TooltipProvider>
                     </TableCell>
-                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-[10px]">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -226,7 +241,7 @@ export function MainTable({
                         </Tooltip>
                       </TooltipProvider>
                     </TableCell>
-                    <TableCell className="max-w-[200px] h-[50px] truncate text-xs">
+                    <TableCell className="max-w-[200px] h-[50px] truncate text-[10px]">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -245,6 +260,7 @@ export function MainTable({
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Badge
+                              className="text-[10px]"
                               variant={
                                 order.OrderStatus === "Nota fiscal Gerada"
                                   ? "invoiceOrder"

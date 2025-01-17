@@ -21,7 +21,7 @@ export default function PrivateLayout({
         <div className="flex-1 bg-[#F5F5F5] overflow-auto">
           <main
             className={`mx-auto p-0 md:p-6 transition-all duration-300 ${
-              collapsed ? "max-w-[1440px]" : "max-w-[1240px]"
+              collapsed ? "max-w-[1920px]" : "max-w-[1640px]"
             }`}
           >
             {children}

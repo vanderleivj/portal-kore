@@ -48,7 +48,7 @@ export function useOrders() {
               datefrom: dateFrom,
               dateto: dateTo,
               Page: params?.page || currentPage,
-              PageSize: params?.pageSize || 10,
+              PageSize: params?.pageSize || 30,
               orderid: params?.orderId || "",
               pagination: params?.pagination || "Y",
             },

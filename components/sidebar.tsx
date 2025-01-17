@@ -7,10 +7,19 @@ import { usePathname } from "next/navigation";
 import { menuItems } from "@/config/menu";
 import Image from "next/image";
 import Logo from "@/app/assets/white-logo.svg";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
   const { collapsed } = useSidebarStore();
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    Cookies.remove("auth-token");
+    Cookies.remove("basic-auth");
+    router.push("/login");
+  };
 
   return (
     <aside
@@ -25,6 +34,29 @@ export default function Sidebar() {
       <nav className="flex flex-col gap-2 p-4">
         {menuItems.map((item) => {
           const isActive = pathname === item.href;
+
+          if (item.isLogout) {
+            return (
+              <button
+                key={item.href}
+                onClick={handleLogout}
+                className={cn(
+                  "flex items-center gap-4 px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors"
+                )}
+              >
+                <item.icon className="size-5 shrink-0" />
+                <span
+                  className={cn(
+                    "whitespace-nowrap transition-all duration-300",
+                    collapsed && "opacity-0 translate-x-28 overflow-hidden"
+                  )}
+                >
+                  {item.title}
+                </span>
+              </button>
+            );
+          }
+
           return (
             <Link
               key={item.href}
