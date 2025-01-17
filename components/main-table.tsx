@@ -59,7 +59,6 @@ export function MainTable({
   }, []);
 
   const handleOrderClick = async (order: Order) => {
-    console.log(order);
     setSelectedOrder(order);
     setIsDialogOpen(true);
     setOrderIdNumber(order.OrderId);
