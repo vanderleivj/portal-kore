@@ -39,25 +39,23 @@ export function useOrderAudit() {
   };
 
   const transformAuditData = (data: ApiOrderAuditResponse): Step[] => {
-    return data.result
-      .filter((audit) => audit.ProcessDescription !== "Total")
-      .map((audit, index) => ({
-        id: index + 1,
-        status: audit.ProcessDescription,
-        responsible: audit.Username.trim(),
-        date: audit.Date,
-        time: audit.Hour,
-        active: true,
-        icon: createElement(
-          getStatusIcon(getStatusKeyId(audit.ProcessDescription)),
-          {
-            className: "size-4",
-          }
-        ),
-      }));
+    return data.result.map((audit, index) => ({
+      id: index + 1,
+      status: audit.ProcessDescription,
+      responsible: audit.Username.trim(),
+      date: audit.Date,
+      time: audit.Hour,
+      active: true,
+      icon: createElement(
+        getStatusIcon(getStatusKeyId(audit.ProcessDescription)),
+        {
+          className: "size-4",
+        }
+      ),
+    }));
   };
 
-  const fetchOrderAudit = async (orderId: string) => {
+  const fetchOrderAudit = async (orderId: string): Promise<Step[]> => {
     try {
       setIsLoading(true);
       setError(null);
@@ -66,9 +64,11 @@ export function useOrderAudit() {
       );
       const steps = transformAuditData(response.data);
       setAuditData({ steps });
+      return steps;
     } catch (err) {
       setError("Erro ao buscar dados de auditoria do pedido");
       console.error("Erro ao buscar dados de auditoria:", err);
+      return [];
     } finally {
       setIsLoading(false);
     }
