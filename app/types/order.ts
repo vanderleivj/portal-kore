@@ -1,12 +1,6 @@
-export interface Order {
+export interface OrderItem {
   ProductionOrderId: string;
-  OrderId: string;
-  Date: string;
-  DeliveryDate: string;
-  ReschedulingDate: string;
-  CarrierName: string;
-  OrderStatus: string;
-  CustomerName: string;
+  OrderFulFilledBy: string;
   ProductId: string;
   ProductDescription: string;
   MeasureUnit1: string;
@@ -15,14 +9,31 @@ export interface Order {
   QuantityUnit2: number;
   QtyAlreadyProduced: number;
   ProductionStatus: string;
+}
+
+export interface Order {
+  OrderId: string;
+  Date: string;
+  DeliveryDate: string;
+  ReschedulingDate: string;
+  CustomerName: string;
+  CarrierName: string;
   PickingOrderStatus: string;
+  SellersName: string;
+  ProductionOrders: string;
+  OrderStatus: string;
+  CustomerPickup: string;
+  PaymentCondition: string;
+  FreightType: string;
   OrderNotes: string;
+  Items: OrderItem[];
 }
 
 export interface OrderListResponse {
   result: Order[];
   hasNext: boolean;
   pageSize: number;
-  Records: number;
+  Itens: number;
   totalPages: number;
+  totalOrders: number;
 }
