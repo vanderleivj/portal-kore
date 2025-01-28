@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Cookies from "js-cookie";
+import { setCookie } from "cookies-next";
 import { FormSchema } from "../types/form";
 import type { FormData } from "../types/form";
 import axios from "axios";
@@ -36,16 +36,16 @@ export const useSignin = () => {
 
       if (response.data.access_token) {
         const token = response.data.access_token;
-        Cookies.set("auth-token", token, { expires: 1 });
+        setCookie("auth-token", token, { maxAge: 60 * 60 * 24 }); // 24 horas
 
         const decodedToken = jose.decodeJwt(token);
 
         setUser({
-          iss: decodedToken.iss,
-          sub: decodedToken.sub,
-          iat: decodedToken.iat,
+          iss: decodedToken.iss as string,
+          sub: decodedToken.sub as string,
+          iat: decodedToken.iat as number,
           userid: decodedToken.userid as string,
-          exp: decodedToken.exp,
+          exp: decodedToken.exp as number,
           envId: decodedToken.envId as string,
         });
 

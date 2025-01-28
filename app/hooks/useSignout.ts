@@ -1,14 +1,12 @@
-import Cookies from "js-cookie";
+import { deleteCookie } from "cookies-next";
 import { useUserStore } from "@/store/user-store";
 
 export const useSignout = () => {
   const clearUser = useUserStore((state) => state.clearUser);
 
   const signout = () => {
-    Cookies.remove("auth-token");
-
+    deleteCookie("auth-token");
     clearUser();
-
     window.location.href = "/login";
   };
 

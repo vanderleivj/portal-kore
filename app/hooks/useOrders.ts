@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { format } from "date-fns";
 import { Order, OrderListResponse } from "../types/order";
 import { DateRange } from "react-day-picker";
-import Cookies from "js-cookie";
+import { getCookie } from "cookies-next";
 import axios from "axios";
 
 interface FetchOrdersParams {
@@ -39,7 +39,7 @@ export function useOrders() {
       try {
         const dateFrom = format(dateRange.from, "yyyyMMdd");
         const dateTo = format(dateRange.to, "yyyyMMdd");
-        const basicToken = Cookies.get("basic-auth");
+        const token = getCookie("auth-token");
 
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/orderlist`,
@@ -53,7 +53,7 @@ export function useOrders() {
               pagination: params?.pagination || "Y",
             },
             headers: {
-              Authorization: basicToken || "",
+              Authorization: token ? `Bearer ${token}` : "",
               "Content-Type": "application/json",
             },
           }
