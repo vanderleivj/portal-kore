@@ -1,18 +1,14 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { FormSchema } from "../types/form";
 import type { FormData } from "../types/form";
 import axios from "axios";
-
-function createBasicAuthToken(username: string, password: string): string {
-  const token = Buffer.from(`${username}:${password}`).toString("base64");
-  return `Basic ${token}`;
-}
+import { useUserStore } from "@/store/user-store";
+import * as jose from "jose";
 
 export const useSignin = () => {
-  const router = useRouter();
+  const setUser = useUserStore((state) => state.setUser);
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -39,17 +35,21 @@ export const useSignin = () => {
       );
 
       if (response.data.access_token) {
-        // Salva o token de acesso
-        Cookies.set("auth-token", response.data.access_token, { expires: 1 });
+        const token = response.data.access_token;
+        Cookies.set("auth-token", token, { expires: 1 });
 
-        // Cria e salva o token básico em base64
-        const basicToken = createBasicAuthToken(
-          data.username.trim(),
-          data.password
-        );
-        Cookies.set("basic-auth", basicToken, { expires: 1 });
+        const decodedToken = jose.decodeJwt(token);
 
-        router.push("/");
+        setUser({
+          iss: decodedToken.iss,
+          sub: decodedToken.sub,
+          iat: decodedToken.iat,
+          userid: decodedToken.userid as string,
+          exp: decodedToken.exp,
+          envId: decodedToken.envId as string,
+        });
+
+        window.location.href = "/";
       }
     } catch (error) {
       console.error("Erro ao fazer login:", error);

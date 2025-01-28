@@ -7,9 +7,11 @@ import { useSidebarStore } from "@/store/use-sidebar-store";
 import { Menu } from "lucide-react";
 import { Button } from "./ui/button";
 import Logo from "@/app/assets/white-logo.svg";
+import { useUserStore } from "@/store/user-store";
 
 export function Header() {
   const { toggleSidebar } = useSidebarStore();
+  const user = useUserStore((state) => state.user);
 
   return (
     <header
@@ -33,7 +35,7 @@ export function Header() {
           </Link>
         </div>
         <div className="text-sm md:text-muted-foreground text-white">
-          Olá, Kaio Lima
+          Olá, {user?.userid || "Usuário"}
         </div>
       </div>
     </header>

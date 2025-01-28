@@ -7,17 +7,20 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { menuItems } from "@/config/menu";
+import { useSignout } from "@/app/hooks/useSignout";
 
 interface MobileMenuProps {
   className?: string;
 }
 
 export function MobileMenu({ className }: MobileMenuProps) {
+  const { signout } = useSignout();
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -33,7 +36,7 @@ export function MobileMenu({ className }: MobileMenuProps) {
         <SheetHeader>
           <SheetTitle className="text-left">Menu</SheetTitle>
         </SheetHeader>
-        <nav className="flex flex-col gap-4 mt-4">
+        <nav className="flex flex-col gap-4 mt-4 justify-between h-full">
           {menuItems.map((item) => (
             <Button
               key={item.href}
@@ -47,6 +50,14 @@ export function MobileMenu({ className }: MobileMenuProps) {
               </Link>
             </Button>
           ))}
+          <Button
+            variant="ghost"
+            className="justify-start gap-2 mb-14 text-red-500"
+            onClick={signout}
+          >
+            <LogOut className="size-4" />
+            Sair
+          </Button>
         </nav>
       </SheetContent>
     </Sheet>
