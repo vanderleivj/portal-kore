@@ -2,6 +2,7 @@ import { useState, createElement } from "react";
 import { api } from "@/lib/axios";
 import { Step } from "@/components/status-timeline";
 import { getStatusIcon, STATUS_LIST } from "@/app/constants/status-icons";
+import { getCookie } from "cookies-next";
 
 interface ApiOrderAudit {
   ProcessDescription: string;
@@ -59,9 +60,17 @@ export function useOrderAudit() {
     try {
       setIsLoading(true);
       setError(null);
+
+      const token = getCookie("auth-token");
       const response = await api.get<ApiOrderAuditResponse>(
-        `OrderAudit/?orderid=${orderId}&pagination=N`
+        `OrderAudit/?orderid=${orderId}&pagination=N`,
+        {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
       );
+
       const steps = transformAuditData(response.data);
       setAuditData({ steps });
       return steps;
