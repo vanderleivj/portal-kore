@@ -7,10 +7,14 @@ import { usePathname } from "next/navigation";
 import { menuItems } from "@/config/menu";
 import Image from "next/image";
 import Logo from "@/app/assets/white-logo.svg";
+import { Button } from "./ui/button";
+import { LogOut } from "lucide-react";
+import { useSignout } from "@/app/hooks/useSignout";
 
 export default function Sidebar() {
   const { collapsed } = useSidebarStore();
   const pathname = usePathname();
+  const { signout } = useSignout();
 
   return (
     <aside
@@ -22,7 +26,7 @@ export default function Sidebar() {
       <div className="flex justify-start items-center h-16 px-4">
         <Image src={Logo} alt="Logo" width={100} height={100} />
       </div>
-      <nav className="flex flex-col gap-2 p-4">
+      <nav className="flex flex-col gap-2 p-4 justify-between h-full">
         {menuItems.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -46,6 +50,21 @@ export default function Sidebar() {
             </Link>
           );
         })}
+        <Button
+          variant="ghost"
+          className="justify-start gap-2 mb-14 text-red-500"
+          onClick={signout}
+        >
+          <LogOut className="size-4" />
+          <span
+            className={cn(
+              "whitespace-nowrap transition-all duration-300",
+              collapsed && "opacity-0 translate-x-28 overflow-hidden"
+            )}
+          >
+            Sair
+          </span>
+        </Button>
       </nav>
     </aside>
   );
