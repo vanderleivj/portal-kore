@@ -26,7 +26,7 @@ export default function Sidebar() {
       <div className="flex justify-start items-center h-16 px-4">
         <Image src={Logo} alt="Logo" width={100} height={100} />
       </div>
-      <nav className="flex flex-col gap-2 p-4 justify-between h-full">
+      <nav className="flex flex-col gap-2 p-4 justify-between h-full fixed">
         {menuItems.map((item) => {
           const isActive = pathname === item.href;
           return (
