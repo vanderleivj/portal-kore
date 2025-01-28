@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
 import axios, { AxiosError } from "axios";
-import { headers } from "next/headers";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const headersList = await headers();
-    const authorization = headersList.get("authorization");
+    const authorization = request.headers.get("authorization");
     const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
 
     if (!authorization) {

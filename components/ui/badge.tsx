@@ -32,6 +32,7 @@ const badgeVariants = cva(
         Devolução_de_Compras: "bg-[#FCE4EC] text-[#C2185B]",
         Digitação_do_pedido_inclusão: "bg-[#E0F2F1] text-[#00695C]",
         Estorno_Separação: "bg-[#FFECB3] text-[#FFA000]",
+        Aguardando_Liberação_Estoque: "bg-[#FFECB3] text-[#FFA000]",
         Estorno_do_pedido: "bg-[#FFCCBC] text-[#E64A19]",
         Exclusão_Nota_Fiscal: "bg-[#D1C4E9] text-[#512DA8]",
         Exclusão_do_pedido: "bg-[#FFCDD2] text-[#D32F2F]",
@@ -59,6 +60,7 @@ const badgeVariants = cva(
           "bg-[#FFCDD2] text-[#C62828]",
         Tentativa_de_alteração_frustrada: "bg-[#FFAB91] text-[#D84315]",
         Tentativa_de_exclusão_frustrada: "bg-[#FFCCBC] text-[#E64A19]",
+        Aguardando_Liberação_Comercial: "bg-[#B3E5FC] text-[#0288D1]",
       },
     },
     defaultVariants: {
