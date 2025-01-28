@@ -21,6 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Badge } from "./ui/badge";
 
 interface MainTableProps {
   data: Order[];
@@ -78,7 +79,7 @@ export function MainTable({
   if (!mounted) return null;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-80px)]">
+    <div className="flex flex-col ">
       <div className="flex-1 overflow-x-auto overflow-y-auto">
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-white">
@@ -126,7 +127,9 @@ export function MainTable({
                     <TruncatedText text={order.SellersName} />
                   </TableCell>
                   <TableCell className="max-w-[200px]">
-                    <TruncatedText text={order.OrderStatus} />
+                    <Badge variant={order.OrderStatus}>
+                      <TruncatedText text={order.OrderStatus} />
+                    </Badge>
                   </TableCell>
                   <TableCell className="w-[100px]">
                     <div className="flex items-center gap-2">
@@ -282,7 +285,7 @@ export function MainTable({
       </div>
 
       {data.length > 0 && (
-        <div className="flex items-center justify-end space-x-2 py-4 border-t bg-white">
+        <div className="flex items-center justify-end space-x-2 py-4 border-t">
           <Button
             variant="outline"
             size="sm"
