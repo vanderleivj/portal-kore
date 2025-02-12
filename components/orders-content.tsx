@@ -14,6 +14,11 @@ export function OrdersContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const initialDateRange = {
+    from: new Date(new Date().setDate(new Date().getDate() - 10)),
+    to: new Date(),
+  };
+
   const {
     orders,
     isLoading,
@@ -47,6 +52,8 @@ export function OrdersContent() {
         from: new Date(dateFrom),
         to: new Date(dateTo),
       });
+    } else {
+      setDateRange(initialDateRange);
     }
   }, [searchParams]);
 

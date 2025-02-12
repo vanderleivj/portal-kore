@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
+import api from "@/lib/axios";
 
 export async function GET(request: Request) {
   try {
@@ -21,7 +22,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const response = await axios.get(`${apiUrl}/orderlist`, {
+    const response = await api.get(`${apiUrl}/orderlist`, {
       params: {
         datefrom: searchParams.get("datefrom"),
         dateto: searchParams.get("dateto"),

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
+import api from "@/lib/axios";
 
 export async function POST(request: Request) {
   try {
@@ -12,7 +13,7 @@ export async function POST(request: Request) {
     params.append("username", formData.get("username") as string);
     params.append("password", formData.get("password") as string);
 
-    const response = await axios.post(authUrl || "", params, {
+    const response = await api.post(authUrl || "", params, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },

@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { Order, OrderListResponse } from "../types/order";
 import { DateRange } from "react-day-picker";
 import { getCookie } from "cookies-next";
-import axios from "axios";
+import api from "@/lib/axios";
 
 interface FetchOrdersParams {
   page?: number;
@@ -41,7 +41,7 @@ export function useOrders() {
         const dateTo = format(dateRange.to, "yyyyMMdd");
         const token = getCookie("auth-token");
 
-        const response = await axios.get(
+        const response = await api.get(
           `${process.env.NEXT_PUBLIC_API_URL}/orderlist`,
           {
             params: {
