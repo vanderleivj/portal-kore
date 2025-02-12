@@ -131,7 +131,9 @@ export function MainTable({
                     <TruncatedText text={order.CustomerName} />
                   </TableCell>
                   <TableCell className="max-w-[200px]">
-                    <TruncatedText text={order.OrderTotal} />
+                    <TruncatedText
+                      text={convertToBRL(Number(order.OrderTotal))}
+                    />
                   </TableCell>
                   <TableCell className="max-w-[200px]">
                     <TruncatedText text={order.SellersName} />
