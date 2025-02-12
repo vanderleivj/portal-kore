@@ -3,9 +3,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { setCookie } from "cookies-next";
 import { FormSchema } from "../types/form";
 import type { FormData } from "../types/form";
-import axios from "axios";
 import { useUserStore } from "@/store/user-store";
 import * as jose from "jose";
+import api from "@/lib/axios";
 
 export const useSignin = () => {
   const setUser = useUserStore((state) => state.setUser);
@@ -24,7 +24,7 @@ export const useSignin = () => {
       params.append("username", data.username.trim());
       params.append("password", data.password);
 
-      const response = await axios.post(
+      const response = await api.post(
         process.env.NEXT_PUBLIC_AUTH_URL || "",
         params,
         {

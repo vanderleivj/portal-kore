@@ -36,6 +36,7 @@ api.interceptors.response.use(
   },
   (error) => {
     // Aqui você pode tratar erros comuns, como 401, 403, etc.
+    console.log(error);
     if (error.response?.status === 401) {
       // Remove os tokens e redireciona para login
       Cookies.remove("auth-token");

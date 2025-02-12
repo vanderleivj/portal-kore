@@ -9,6 +9,8 @@ export interface OrderItem {
   QuantityUnit2: number;
   QtyAlreadyProduced: number;
   ProductionStatus: string;
+  UnitaryPrice: number;
+  TotalPrice: number;
 }
 
 export interface Order {
@@ -27,6 +29,8 @@ export interface Order {
   FreightType: string;
   OrderNotes: string;
   Items: OrderItem[];
+  OrderNumberMP: string;
+  OrderTotal: string;
 }
 
 export interface OrderListResponse {

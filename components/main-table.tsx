@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "./ui/badge";
+import { convertToBRL } from "@/app/utils/convertToBRL";
 
 interface MainTableProps {
   data: Order[];
@@ -97,7 +98,13 @@ export function MainTable({
                 Data Reprogramada
               </TableHead>
               <TableHead className="bg-white max-w-[200px]">Cliente</TableHead>
+              <TableHead className="bg-white max-w-[200px]">
+                Valor total pedido
+              </TableHead>
               <TableHead className="bg-white max-w-[200px]">Vendedor</TableHead>
+              <TableHead className="bg-white max-w-[200px]">
+                Nº Pedido Mercos
+              </TableHead>
               <TableHead className="bg-white max-w-[200px]">
                 Status Pedido
               </TableHead>
@@ -124,7 +131,13 @@ export function MainTable({
                     <TruncatedText text={order.CustomerName} />
                   </TableCell>
                   <TableCell className="max-w-[200px]">
+                    <TruncatedText text={order.OrderTotal} />
+                  </TableCell>
+                  <TableCell className="max-w-[200px]">
                     <TruncatedText text={order.SellersName} />
+                  </TableCell>
+                  <TableCell className="max-w-[200px]">
+                    <TruncatedText text={order?.OrderNumberMP || "-"} />
                   </TableCell>
                   <TableCell className="max-w-[200px]">
                     <Badge variant={order.OrderStatus}>
@@ -156,7 +169,7 @@ export function MainTable({
                 </TableRow>
                 {expandedIndex === index && (
                   <TableRow>
-                    <TableCell colSpan={8}>
+                    <TableCell colSpan={12}>
                       <div className="p-4">
                         <div className="flex flex-col gap-4">
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -208,6 +221,12 @@ export function MainTable({
                                   Un.2
                                 </TableHead>
                                 <TableHead className="bg-white max-w-[150px]">
+                                  Preço Un.
+                                </TableHead>
+                                <TableHead className="bg-white max-w-[150px]">
+                                  Preço Total
+                                </TableHead>
+                                <TableHead className="bg-white max-w-[150px]">
                                   Atende com
                                 </TableHead>
                                 <TableHead className="bg-white max-w-[100px]">
@@ -244,6 +263,16 @@ export function MainTable({
                                   </TableCell>
                                   <TableCell className="max-w-[80px]">
                                     <TruncatedText text={item.MeasureUnit2} />
+                                  </TableCell>
+                                  <TableCell className="max-w-[150px]">
+                                    <TruncatedText
+                                      text={convertToBRL(item.UnitaryPrice)}
+                                    />
+                                  </TableCell>
+                                  <TableCell className="max-w-[150px]">
+                                    <TruncatedText
+                                      text={convertToBRL(item.TotalPrice)}
+                                    />
                                   </TableCell>
                                   <TableCell className="max-w-[150px]">
                                     <TruncatedText
