@@ -114,7 +114,7 @@ export function MainTable({
           <TableBody>
             {data.map((order, index) => (
               <>
-                <TableRow key={order.OrderId}>
+                <TableRow key={order.OrderId + index}>
                   <TableCell className="max-w-[200px]">
                     <TruncatedText text={order.Date} />
                   </TableCell>
@@ -139,7 +139,7 @@ export function MainTable({
                     <TruncatedText text={order.SellersName} />
                   </TableCell>
                   <TableCell className="max-w-[200px]">
-                    <TruncatedText text={order?.OrderNumberMP || "-"} />
+                    <TruncatedText text={order?.MPOrderNumber || "-"} />
                   </TableCell>
                   <TableCell className="max-w-[200px]">
                     <Badge variant={order.OrderStatus}>
@@ -229,6 +229,9 @@ export function MainTable({
                                   Preço Total
                                 </TableHead>
                                 <TableHead className="bg-white max-w-[150px]">
+                                  Comissão
+                                </TableHead>
+                                <TableHead className="bg-white max-w-[150px]">
                                   Atende com
                                 </TableHead>
                                 <TableHead className="bg-white max-w-[100px]">
@@ -241,7 +244,7 @@ export function MainTable({
                             </TableHeader>
                             <TableBody>
                               {order.Items.map((item, itemIndex) => (
-                                <TableRow key={itemIndex}>
+                                <TableRow key={itemIndex + index}>
                                   <TableCell className="max-w-[200px]">
                                     <TruncatedText text={item.ProductId} />
                                   </TableCell>
@@ -274,6 +277,13 @@ export function MainTable({
                                   <TableCell className="max-w-[150px]">
                                     <TruncatedText
                                       text={convertToBRL(item.TotalPrice)}
+                                    />
+                                  </TableCell>
+                                  <TableCell className="max-w-[150px]">
+                                    <TruncatedText
+                                      text={`${(item.Commission * 100).toFixed(
+                                        2
+                                      )}%`}
                                     />
                                   </TableCell>
                                   <TableCell className="max-w-[150px]">

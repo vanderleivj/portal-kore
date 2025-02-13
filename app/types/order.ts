@@ -11,6 +11,7 @@ export interface OrderItem {
   ProductionStatus: string;
   UnitaryPrice: number;
   TotalPrice: number;
+  Commission: number;
 }
 
 export interface Order {
@@ -29,7 +30,7 @@ export interface Order {
   FreightType: string;
   OrderNotes: string;
   Items: OrderItem[];
-  OrderNumberMP: string;
+  MPOrderNumber: string;
   OrderTotal: string;
 }
 
