@@ -281,9 +281,7 @@ export function MainTable({
                                   </TableCell>
                                   <TableCell className="max-w-[150px]">
                                     <TruncatedText
-                                      text={`${(item.Commission * 100).toFixed(
-                                        2
-                                      )}%`}
+                                      text={`${item.Commission.toFixed(2)}%`}
                                     />
                                   </TableCell>
                                   <TableCell className="max-w-[150px]">
